@@ -21,4 +21,14 @@ describe('generateMagnetUrl', () => {
       'magnet:?xt=urn:btih:123123&dn=test&tr=http%3A%2F%2Ftracker.fake.com1&tr=http%3A%2F%2Ftracker.fake.com2'
     );
   });
+
+  test('with no hash', async () => {
+    const url = generateMagnetUrl(null, 'test', []);
+    expect(url).toBe(null);
+  });
+
+  test('with empty hash', async () => {
+    const url = generateMagnetUrl('', 'test', []);
+    expect(url).toBe(null);
+  });
 });
