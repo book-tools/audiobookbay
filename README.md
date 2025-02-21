@@ -17,9 +17,9 @@ npm install audiobookbay
 <br>
 
 ```js
-import { search } from "audiobookbay";
+import { search } from 'audiobookbay';
 
-const audiobooks = await search("dune", 1, {
+const audiobooks = await search('dune', 1, {
   titleAuthor: true,
 });
 ```
@@ -88,9 +88,9 @@ const audiobooks = await search("dune", 1, {
 <br>
 
 ```js
-import { explore } from "audiobookbay";
+import { explore } from 'audiobookbay';
 
-const audiobooks = await explore("category", "postapocalyptic", 2);
+const audiobooks = await explore('category', 'postapocalyptic', 2);
 ```
 
 ### Response
@@ -130,10 +130,10 @@ const audiobooks = await explore("category", "postapocalyptic", 2);
 <br>
 
 ```js
-import { audiobook } from "audiobookbay";
+import { audiobook } from 'audiobookbay';
 
 const audiobook = await audiobook(
-  "the-road-to-dune-brian-herbert-kevin-j-anderson-frank-herbert"
+  'the-road-to-dune-brian-herbert-kevin-j-anderson-frank-herbert'
 );
 ```
 

@@ -1,22 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "strict": true,
-    "moduleResolution": "node",
     "outDir": "dist",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": [
-      "vitest/globals"
-    ],
+    "types": ["vitest/globals"]
   },
-  
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

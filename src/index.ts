@@ -1,12 +1,10 @@
-import { URLSearchParams } from "url";
-import { audiobookBayUrl } from "./constants";
-import { AudiobookDetails } from "./interface/audiobookDetails";
-
-import { Categories, Tags } from "./interface/explore";
-import { AudioBookSearchResult, SearchIn } from "./interface/search";
-
-import { getAudiobook } from "./utils/getAudiobook";
-import { searchAudiobooks } from "./utils/searchAudiobooks";
+import 'isomorphic-fetch';
+import { AUDIOBOOKBAY_URL } from './constants';
+import type { AudiobookDetails } from './interface/audiobook';
+import type { Categories, Tags } from './interface/explore';
+import type { AudioBookSearchResult, SearchIn } from './interface/search';
+import { getAudiobook } from './utils/getAudiobook';
+import { searchAudiobooks } from './utils/searchAudiobooks';
 
 /**
  * Search Audiobooks
@@ -25,16 +23,16 @@ export const search = async (
 
     const params = new URLSearchParams({
       s: query.toLowerCase(),
-      tt: [titleAuthor ? "1" : "", content ? "2" : "", torrent ? "3" : ""]
+      tt: [titleAuthor ? '1' : '', content ? '2' : '', torrent ? '3' : '']
         .filter(Boolean)
-        .join(","),
+        .join(','),
     });
-    const url = `${audiobookBayUrl}/page/${page}/?${params.toString()}`;
+    const url = `${AUDIOBOOKBAY_URL}/page/${page}/?${params.toString()}`;
 
     return await searchAudiobooks(url);
   } catch (error) {
     console.error(error);
-    throw new Error("Nothing was found");
+    throw new Error('Nothing was found');
   }
 };
 
@@ -45,11 +43,14 @@ export const search = async (
  * @param domain AudioBookBay site url
  * @returns Single Audiobook
  */
-export const audiobook = async (id: string, domain?: string): Promise<AudiobookDetails> => {
+export const audiobook = async (
+  id: string,
+  domain?: string
+): Promise<AudiobookDetails> => {
   try {
     return await getAudiobook(id, domain);
   } catch (error) {
-    throw new Error("Failed to get Audiobook");
+    throw new Error('Failed to get Audiobook');
   }
 };
 
@@ -61,16 +62,17 @@ export const audiobook = async (id: string, domain?: string): Promise<AudiobookD
  * @param page Current Page
  */
 export const explore = async (
-  type: "category" | "tag",
+  type: 'category' | 'tag',
   explore: Categories | Tags,
   page: number = 1
 ): Promise<AudioBookSearchResult> => {
   try {
     return await searchAudiobooks(
-      `${audiobookBayUrl}/audio-books/${type === "category" ? "type" : "tag"
-      }/${explore}/${page !== 1 ? "page/" + page + "/" : ""}`
+      `${AUDIOBOOKBAY_URL}/audio-books/${
+        type === 'category' ? 'type' : 'tag'
+      }/${explore}/${page !== 1 ? 'page/' + page + '/' : ''}`
     );
   } catch (error) {
-    throw new Error("You can explore only by category and tag");
+    throw new Error('You can explore only by category and tag');
   }
 };

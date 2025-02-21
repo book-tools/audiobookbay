@@ -1,23 +1,7 @@
-/**
- * Search result AudioBook
- */
-export interface Audiobook {
-  title: string;
-  id: string;
-  categories: string[];
-  lang: string;
-  cover: string;
-  posted: string;
-  info: {
-    format: string;
-    unit: string;
-    size: string;
-    sizeUnit: string;
-  };
-}
+import type { SearchAudiobook } from './audiobook';
 
 export interface AudioBookSearchResult {
-  data: Audiobook[]
+  data: SearchAudiobook[];
   pagination: Pagination;
 }
 

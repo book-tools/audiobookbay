@@ -1,12 +1,10 @@
-import { audiobook } from "../src";
-import { getAudiobook } from "../src/utils/getAudiobook";
+import { describe, expect, test } from 'vitest';
+import { getAudiobook } from '../src/utils/getAudiobook';
 
-
-describe("Get Audiobook", () => {
-
-  test("get by id", async () => {
+describe('Get Audiobook', () => {
+  test('get by id', async () => {
     const data = await getAudiobook(
-      "the-road-to-dune-brian-herbert-kevin-j-anderson-frank-herbert"
+      'the-roaud-to-dune-brian-herbert-kevin-j-anderson-frank-herbert'
     );
 
     expect(data).toEqual(
@@ -35,12 +33,9 @@ describe("Get Audiobook", () => {
     );
   });
 
-  test("get by bad id", async () => {
-    const data = await getAudiobook("NOT REAL ID");
+  test('get by bad id', async () => {
+    const data = await getAudiobook('NOT REAL ID');
 
     expect(data.title).toEqual(''); // TODO: This should likely fail better
   });
-
 });
-
-
