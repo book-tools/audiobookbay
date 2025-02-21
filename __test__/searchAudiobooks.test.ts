@@ -1,14 +1,10 @@
 import { describe, expect, test } from 'vitest';
-import type { Pagination } from '../src/interface/search';
-import type { SearchAudiobook } from '../src/interface/audiobook';
+import type { AudiobookSearchResult } from '../src/interface/search';
 import { explore, search } from '../src/index';
 import { searchAudiobooks } from '../src/utils/searchAudiobooks';
 import { getExploreUrl, getSearchUrl } from '../src/utils/url';
 
-const expectedData = (data: {
-  pagination: Pagination;
-  data: SearchAudiobook[];
-}) => {
+const expectedData = (data: AudiobookSearchResult) => {
   expect(data).toEqual(
     expect.objectContaining({
       pagination: {
