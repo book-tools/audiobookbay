@@ -7,7 +7,7 @@ describe('Get Audiobook', () => {
     const audiobookUrl =
       'https://audiobookbay.fi/the-beginning-after-the-end-book-11-providence-turtleme';
 
-    const data = await getAudiobook(audiobookUrl, AUDIOBOOKBAY_URL);
+    const data = await getAudiobook(audiobookUrl);
 
     expect(data).toEqual(
       expect.objectContaining({
@@ -40,8 +40,6 @@ describe('Get Audiobook', () => {
   });
 
   test('Get By Bad URL', async () => {
-    await expect(
-      getAudiobook('NOT REAL URL', AUDIOBOOKBAY_URL)
-    ).rejects.toThrow();
+    await expect(getAudiobook('NOT REAL URL')).rejects.toThrow();
   });
 });

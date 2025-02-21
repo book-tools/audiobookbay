@@ -1,7 +1,6 @@
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { describe, expect, test } from 'vitest';
-import { AUDIOBOOKBAY_URL } from '../src/constants';
 import { parseSearchAudiobooks } from '../src/utils/searchAudiobooks';
 
 describe('Parse Audiobook Search Results', () => {
@@ -11,7 +10,7 @@ describe('Parse Audiobook Search Results', () => {
       'utf8'
     );
 
-    const data = parseSearchAudiobooks(AUDIOBOOKBAY_URL, html);
+    const data = parseSearchAudiobooks(html);
 
     expect(data).toEqual(
       expect.objectContaining({
@@ -178,7 +177,7 @@ describe('Parse Audiobook Search Results', () => {
       'utf8'
     );
 
-    const data = parseSearchAudiobooks(AUDIOBOOKBAY_URL, html);
+    const data = parseSearchAudiobooks(html);
 
     expect(data).toEqual(
       expect.objectContaining({

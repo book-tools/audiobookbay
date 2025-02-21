@@ -2,8 +2,8 @@ import { describe, expect, test } from 'vitest';
 import type { Pagination } from '../src/interface/search';
 import type { SearchAudiobook } from '../src/interface/audiobook';
 import { explore, search } from '../src/index';
-import { AUDIOBOOKBAY_URL } from '../src/constants';
 import { searchAudiobooks } from '../src/utils/searchAudiobooks';
+import { getExploreUrl, getSearchUrl } from '../src/utils/url';
 
 const expectedData = (data: {
   pagination: Pagination;
@@ -39,21 +39,13 @@ const expectedData = (data: {
 
 describe('Search Audiobooks', () => {
   test('Search Audiobook', async () => {
-    expectedData(
-      await searchAudiobooks(
-        `${AUDIOBOOKBAY_URL}/page/1/?s=dune&tt=1,2,3`,
-        AUDIOBOOKBAY_URL
-      )
-    );
+    const searchUrl = getSearchUrl('dune');
+    expectedData(await searchAudiobooks(searchUrl));
   });
 
   test('Explore Audiobook', async () => {
-    expectedData(
-      await searchAudiobooks(
-        `${AUDIOBOOKBAY_URL}/audio-books/type/fantasy/page/2/`,
-        AUDIOBOOKBAY_URL
-      )
-    );
+    const searchUrl = getExploreUrl('category', 'fantasy', 2);
+    expectedData(await searchAudiobooks(searchUrl));
   });
 
   test('Search', async () => {

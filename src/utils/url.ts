@@ -2,9 +2,26 @@ import {
   AUDIOBOOK_PATH_SLUG,
   AUDIOBOOKBAY_URL,
   EXPLORE_PATH_SLUG,
+  USER_AGENT,
 } from '../constants';
 import { Categories, ExploreType, Tags } from '../interface/explore';
 import type { SearchIn, SearchOptions } from '../interface/search';
+
+export const fetchPageContent = async (url: string): Promise<string> => {
+  const res = await fetch(url, {
+    method: 'GET',
+    redirect: 'follow',
+    headers: { 'User-Agent': USER_AGENT },
+  });
+
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+
+  const html = await res.text();
+
+  return html;
+};
 
 /**
  * Prefix the URL with https:// if it doesn't already have it
@@ -81,7 +98,10 @@ export const getSearchUrl = (
   return `${prefixHttps(baseUrl)}/${pagePathPart}?${params.toString()}`;
 };
 
-export const getAudiobookUrl = (baseUrl: string, id: string) => {
+export const getAudiobookUrl = (
+  id: string,
+  baseUrl: string = AUDIOBOOKBAY_URL
+) => {
   return `${prefixHttps(baseUrl)}/${AUDIOBOOK_PATH_SLUG}/${id}`;
 };
 

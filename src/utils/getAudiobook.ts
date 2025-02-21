@@ -12,12 +12,13 @@ import {
   parseUrlSlug,
 } from './fields';
 import { cleanDescription } from './string';
-import { USER_AGENT } from '../constants';
+import { fetchPageContent } from './url';
+import { AUDIOBOOKBAY_URL } from '../constants';
 
 export const parseAudiobook = (
+  html: string,
   url: string,
-  baseUrl: string,
-  html: string
+  baseUrl: string = AUDIOBOOKBAY_URL
 ): Audiobook => {
   const $ = loadCheerioPage(html);
 
@@ -182,13 +183,8 @@ export const parseAudiobook = (
 
 export const getAudiobook = async (
   url: string,
-  baseUrl: string
+  baseUrl: string = AUDIOBOOKBAY_URL
 ): Promise<Audiobook> => {
-  const audiobookRes = await fetch(url, {
-    method: 'GET',
-    redirect: 'follow',
-    headers: { 'User-Agent': USER_AGENT },
-  });
-  const audiobookHtml = await audiobookRes.text();
-  return parseAudiobook(url, baseUrl, audiobookHtml);
+  const audiobookHtml = await fetchPageContent(url);
+  return parseAudiobook(audiobookHtml, url, baseUrl);
 };

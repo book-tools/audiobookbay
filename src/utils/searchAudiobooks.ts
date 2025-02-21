@@ -11,10 +11,12 @@ import {
   parseTitleAuthor,
   parseUrlSlug,
 } from './fields';
+import { fetchPageContent } from './url';
+import { AUDIOBOOKBAY_URL } from '../constants';
 
 export const parseSearchAudiobooks = (
-  baseUrl: string,
-  html: string
+  html: string,
+  baseUrl: string = AUDIOBOOKBAY_URL
 ): AudiobookSearchResult => {
   const $ = loadCheerioPage(html);
 
@@ -173,9 +175,8 @@ export const parseSearchAudiobooks = (
  */
 export const searchAudiobooks = async (
   url: string,
-  baseUrl: string
+  baseUrl: string = AUDIOBOOKBAY_URL
 ): Promise<AudiobookSearchResult> => {
-  const request = await fetch(url);
-  const results = await request.text();
-  return parseSearchAudiobooks(baseUrl, results);
+  const searchHtml = await fetchPageContent(url);
+  return parseSearchAudiobooks(searchHtml, baseUrl);
 };

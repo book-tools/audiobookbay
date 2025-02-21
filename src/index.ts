@@ -46,7 +46,7 @@ export const audiobook = async (
   baseUrl: string = AUDIOBOOKBAY_URL
 ): Promise<Audiobook> => {
   try {
-    const audiobookUrl = getAudiobookUrl(baseUrl, id);
+    const audiobookUrl = getAudiobookUrl(id, baseUrl);
     return await getAudiobook(id, audiobookUrl);
   } catch (error) {
     console.error(error);
