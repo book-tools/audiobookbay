@@ -27,7 +27,8 @@ export const search = async (
   try {
     const url = getSearchUrl(query, options, baseUrl);
 
-    return await searchAudiobooks(url, baseUrl);
+    const searchResult = await searchAudiobooks(url, baseUrl);
+    return searchResult;
   } catch (error) {
     console.error(error);
     throw new Error('Nothing was found');
@@ -47,7 +48,8 @@ export const audiobook = async (
 ): Promise<Audiobook> => {
   try {
     const audiobookUrl = getAudiobookUrl(id, baseUrl);
-    return await getAudiobook(id, audiobookUrl);
+    const audiobook = await getAudiobook(audiobookUrl);
+    return audiobook;
   } catch (error) {
     console.error(error);
     throw new Error('Failed to get Audiobook');
@@ -72,7 +74,8 @@ export const explore = async (
       type === 'category' ? 'type' : 'tag'
     }/${explore}/${page !== 1 ? 'page/' + page + '/' : ''}`;
 
-    return await searchAudiobooks(exploreUrl, baseUrl);
+    const searchResult = await searchAudiobooks(exploreUrl, baseUrl);
+    return searchResult;
   } catch (error) {
     console.error(error);
     throw new Error('You can explore only by category and tag');

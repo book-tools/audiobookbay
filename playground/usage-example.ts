@@ -1,9 +1,7 @@
 import { inspect } from 'util';
 import pc from 'picocolors';
 import { AudiobookSearchResult } from '../src/interface/search';
-import { search } from '../src/index';
-import { getAudiobook } from '../src/utils/getAudiobook';
-import { AUDIOBOOKBAY_URL } from '../src/constants';
+import { audiobook, search } from '../src/index';
 
 // search params
 const searchTerm = 'John Bierce';
@@ -25,6 +23,7 @@ async function main() {
     currentPage < maxPages
   ) {
     currentPage += 1;
+    console.log(`Searching page ${currentPage}`);
     const nextPage = await search(searchTerm.toLowerCase().trim(), {
       page: currentPage,
     });
@@ -52,7 +51,7 @@ async function main() {
   for (const item of searchResult.data) {
     console.log(`${pos} - ${pc.green(item.title)} - ${pc.gray(item.id)}`);
     if (getMagnetLink) {
-      const book = await getAudiobook(item.id, AUDIOBOOKBAY_URL);
+      const book = await audiobook(item.id);
       console.log('magnetUrl: ' + pc.yellow(pc.dim(book.torrent.magnetUrl)));
       console.log('Full Book JSON:');
       console.log(
