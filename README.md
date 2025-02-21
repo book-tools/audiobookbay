@@ -37,9 +37,9 @@ const audiobooks = await search('dune', 1, {
      "title": "Audiobook Title",
      "url":
        "Audiobook URL",
-     "category":
+     "categories":
        ["Array of Categories"],
-     "lang": "Audiobook Language",
+     "language": "Audiobook Language",
      "cover": "Audiobook Cover",
      "posted": "Date when Audiobook was posted",
      "info": {
@@ -108,7 +108,7 @@ const audiobooks = await explore('category', 'postapocalyptic', 2);
        "Audiobook URL",
      "category":
        ["Array of Categories"],
-     "lang": "Audiobook Language",
+     "language": "Audiobook Language",
      "cover": "Audiobook Cover",
      "posted": "Date when Audiobook was posted",
      "info": {
@@ -143,7 +143,7 @@ const audiobook = await audiobook(
 {
   "title": "Audiobook title",
   "category": ["Array of Categories"],
-  "lang": "Audiobook Language",
+  "language": "Audiobook Language",
   "cover": "Audiobook Cover",
   "author": "Audiobook Author",
   "read": "Audiobook Reader",

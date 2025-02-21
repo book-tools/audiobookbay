@@ -1,14 +1,21 @@
 export const generateMagnetUrl = (
-  hash: string,
+  hash: string | null,
   title: string,
   trackers: string[]
-): string | undefined => {
-  let magnetUrl = undefined;
-  if (hash.length > 0) {
-    magnetUrl = `magnet:?xt=urn:btih:${hash}&dn=${encodeURIComponent(
-      title
-    )}&tr=${trackers.join('&tr=')}`;
+): string | null => {
+  if (!hash) {
+    return null;
   }
 
-  return magnetUrl;
+  const searchParams = new URLSearchParams();
+  if (title) {
+    searchParams.append('dn', title);
+  }
+  trackers.forEach((tracker) => {
+    if (tracker) {
+      searchParams.append('tr', tracker);
+    }
+  });
+
+  return `magnet:?xt=urn:btih:${hash}&${searchParams.toString()}`;
 };

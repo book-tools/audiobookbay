@@ -1,41 +1,47 @@
 import { describe, expect, test } from 'vitest';
 import { getAudiobook } from '../src/utils/getAudiobook';
+import { AUDIOBOOKBAY_URL } from '../src/constants';
 
 describe('Get Audiobook', () => {
-  test('get by id', async () => {
-    const data = await getAudiobook(
-      'the-roaud-to-dune-brian-herbert-kevin-j-anderson-frank-herbert'
-    );
+  test('Get By URL', async () => {
+    const audiobookUrl =
+      'https://audiobookbay.fi/the-beginning-after-the-end-book-11-providence-turtleme';
+
+    const data = await getAudiobook(audiobookUrl, AUDIOBOOKBAY_URL);
 
     expect(data).toEqual(
       expect.objectContaining({
+        id: expect.any(String),
         title: expect.any(String),
         categories: expect.any(Array),
-        lang: expect.any(String),
-        cover: expect.any(String),
-        author: expect.any(String),
-        read: expect.any(String),
-        audioSample: expect.any(String),
+        language: expect.any(String),
+        cover: expect.toBeOneOf([expect.any(String), null]),
+        authors: expect.any(Array),
+        narrators: expect.any(Array),
+        audioSample: expect.toBeOneOf([expect.any(String), null]),
+        posted: expect.toBeOneOf([expect.any(String), null]),
         specs: {
-          format: expect.any(String),
-          bitrate: expect.any(String),
+          format: expect.toBeOneOf([expect.any(String), null]),
+          bitrate: expect.toBeOneOf([expect.any(String), null]),
+          bitrateKbps: expect.toBeOneOf([expect.any(Number), null]),
+          size: expect.toBeOneOf([expect.any(Number), null]),
         },
-        abridged: expect.any(String),
+        abridged: expect.toBeOneOf([expect.any(String), null]),
         description: expect.any(String),
         torrent: {
-          hash: expect.any(String),
+          hash: expect.toBeOneOf([expect.any(String), null]),
+          announceUrl: expect.toBeOneOf([expect.any(String), null]),
           trackers: expect.any(Array),
-          size: expect.any(String),
-          magnetUrl: expect.any(String),
+          magnetUrl: expect.toBeOneOf([expect.any(String), null]),
         },
         related: expect.any(Array),
       })
     );
   });
 
-  test('get by bad id', async () => {
-    const data = await getAudiobook('NOT REAL ID');
-
-    expect(data.title).toEqual(''); // TODO: This should likely fail better
+  test('Get By Bad URL', async () => {
+    await expect(
+      getAudiobook('NOT REAL URL', AUDIOBOOKBAY_URL)
+    ).rejects.toThrow();
   });
 });

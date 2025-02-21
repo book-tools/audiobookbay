@@ -1,142 +1,194 @@
 import { load as loadCheerioPage } from 'cheerio';
-import { AUDIOBOOKBAY_URL } from '../constants';
-import type {
-  AudiobookDetails,
-  RelatedAudiobook,
-} from '../interface/audiobook';
+import type { Audiobook, BaseAudiobook } from '../interface/audiobook';
 import { generateMagnetUrl } from './generateMagnetUrl';
+import {
+  cleanString,
+  parseBitrate,
+  parseCoverUrl,
+  parseDate,
+  parseFileSize,
+  parseFormat,
+  parseTitleAuthor,
+  parseUrlSlug,
+} from './fields';
+import { cleanDescription } from './string';
+import { USER_AGENT } from '../constants';
 
-export const getAudiobook = async (
-  id: string,
-  domain?: string
-): Promise<AudiobookDetails> => {
-  const audiobookUrl = encodeURI(`${domain ?? AUDIOBOOKBAY_URL}/abss/${id}/`);
-  const request = await fetch(audiobookUrl);
-  const results = await request.text();
-  const $ = loadCheerioPage(results);
+export const parseAudiobook = (
+  url: string,
+  baseUrl: string,
+  html: string
+): Audiobook => {
+  const $ = loadCheerioPage(html);
 
   // Title
-  const title = $('.postTitle h1').text();
+  const { title } = parseTitleAuthor($('.postTitle h1').text());
+  if (!title) {
+    throw new Error('Failed to get Audiobook');
+  }
 
   // Category
-  const category: string[] = [];
-  $('.postInfo a').each((_index, el) => {
+  const categories: string[] = [];
+  $('.postInfo a').each((_, el) => {
     if ($(el).attr('rel') === 'category tag') {
-      category.push($(el).text());
+      categories.push(cleanString($(el).text()));
     }
   });
 
   // Language
-  const lang = $('.postInfo a span[itemprop="inLanguage"]').text();
+  const language = $('.postInfo a span[itemprop="inLanguage"]').text();
 
   // Cover
-  let cover: string = '';
-  const coverUrl = $('.postContent')
-    .find('img[itemprop="thumbnailUrl"]')
-    .attr('src');
-
-  if (coverUrl === '/images/default_cover.jpg') {
-    cover = `${domain ?? AUDIOBOOKBAY_URL}/${coverUrl}`;
-  } else {
-    cover = coverUrl ?? '';
-  }
+  const coverSrc = $('.postContent').find('img[itemprop="image"]').attr('src');
+  const cover = parseCoverUrl(baseUrl, coverSrc);
 
   const descEl = $('.desc');
 
   // Author/s
-  const author = descEl.find('span[class="author"]').text();
+  const authors: string[] = [];
+  descEl.find('span.author').each((_, el) => {
+    authors.push(cleanString($(el).text()));
+  });
 
   // Voice Actor Name
-  const read = descEl.find('span[class="narrator"]').text();
+  const narrators: string[] = [];
+  descEl.find('span.narrator').each((_, el) => {
+    narrators.push($(el).text().trim());
+  });
 
   // Audio Sample in MP3
-  let audioSample;
-  if (results.search('<audio') !== -1) {
-    audioSample = $(`audio`).attr('src');
-  }
+  const audioSample: string | null = $('audio')?.attr('src') ?? null;
 
   // Format
-  const format = descEl.find('span[class="format"]').text();
+  const format = parseFormat(descEl.find('span.format').text());
 
   // Bitrate
-  const bitrate = descEl.find('span[class="bitrate"]').text();
+  const bitrateStr = descEl.find('span.bitrate').text();
+  const { bitrate, bitrateKbps } = parseBitrate(bitrateStr);
 
   // Abridged
-  const abridged = descEl.find('span[class="is_abridged"]').text();
+  const abridged = descEl.find('span.is_abridged').text();
 
   // Description
-  const description = descEl.find('p:not(:first-child)').text();
+  const descriptionArr: string[] = [];
+  descEl.find('p:not(:first-child)').each((_, pEl) => {
+    const cleanP = cleanDescription($(pEl).html() ?? '');
 
-  // Torrent Size
-  const size = $(
-    '.postContent table tr:nth-last-child(11) td:last-child'
-  ).text();
+    if (cleanP) {
+      descriptionArr.push(cleanP.trim());
+    }
+  });
+  const description = descriptionArr.join('\n\n');
 
-  // Tracker, Torrent Hash
+  // Tracker, Torrent Hash, File Size
+  let announceUrl: string | null = null;
   const trackers: string[] = [];
-  let hash: string = '';
+  let hash: string | null = null;
+  let posted: string | null = null;
+  let size: number | null = null;
 
-  $('.postContent table tr').each((index, element) => {
-    const tdFirst = $(element).find('td:first-child');
-    const tdSecond = $(element).find('td:last-child');
+  $('.postContent table tr').each((_, element) => {
+    const tdFirst = $(element).find('td:first-child').text().trim();
+    const tdSecond = $(element).find('td:last-child').text().trim();
 
-    switch (tdFirst.text()) {
+    if (!tdFirst || !tdSecond || tdFirst === tdSecond) {
+      return;
+    }
+
+    switch (tdFirst) {
+      case 'Announce URL:':
+        announceUrl = tdSecond;
+        break;
+
       case 'Tracker:':
-        trackers.push(tdSecond.text());
+        trackers.push(tdSecond);
         break;
 
       case 'Info Hash:':
-        hash = tdSecond.text();
+        hash = tdSecond;
+        break;
+
+      case 'Creation Date:':
+        posted = parseDate(tdSecond);
+        break;
+
+      case 'File Size:':
+      case 'Combined File Size:':
+        size = parseFileSize(tdSecond);
+        break;
+
+      default:
         break;
     }
   });
 
   // Related Audiobooks
-  const related: RelatedAudiobook[] = [];
+  const related: BaseAudiobook[] = [];
 
-  $(`#rsidebar ul li`).each((index, element) => {
+  $(`#rsidebar ul li`).each((_, element) => {
     if ($(element).find('h2').text().includes('Related')) {
       $(element)
         .find('ul li')
         .each((_, relatedEl) => {
           const linkEl = $(relatedEl).find('a');
 
-          const title = linkEl.text();
+          const relatedUrl = linkEl.attr('href');
+          const relatedTitleAuthors = parseTitleAuthor(linkEl.text());
 
-          let urlEl = linkEl.attr('href');
-
-          if (urlEl) {
+          if (relatedUrl) {
             related.push({
-              title,
-              id: urlEl.replace('/audio-books/', '').replace('/', ''),
+              id: parseUrlSlug(relatedUrl),
+              title: relatedTitleAuthors.title,
+              authors: relatedTitleAuthors.authors,
             });
           }
         });
     }
   });
 
-  const result: AudiobookDetails = {
+  const magnetUrl = generateMagnetUrl(hash, title, trackers);
+
+  const id = parseUrlSlug(url);
+
+  const book: Audiobook = {
+    id,
     title,
-    categories: category,
-    lang,
+    categories,
+    language,
     cover,
-    author,
-    read,
+    authors,
+    narrators,
     audioSample,
+    posted,
     specs: {
       format,
       bitrate,
+      bitrateKbps,
+      size,
     },
     abridged,
     description,
     torrent: {
       hash,
+      announceUrl,
       trackers,
-      size,
-      magnetUrl: generateMagnetUrl(hash, title, trackers),
+      magnetUrl,
     },
     related,
   };
 
-  return result;
+  return book;
+};
+
+export const getAudiobook = async (
+  url: string,
+  baseUrl: string
+): Promise<Audiobook> => {
+  const audiobookRes = await fetch(url, {
+    method: 'GET',
+    redirect: 'follow',
+    headers: { 'User-Agent': USER_AGENT },
+  });
+  const audiobookHtml = await audiobookRes.text();
+  return parseAudiobook(url, baseUrl, audiobookHtml);
 };

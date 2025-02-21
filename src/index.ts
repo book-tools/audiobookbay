@@ -1,35 +1,33 @@
 import 'isomorphic-fetch';
-import { AUDIOBOOKBAY_URL } from './constants';
-import type { AudiobookDetails } from './interface/audiobook';
+import { AUDIOBOOKBAY_URL, EXPLORE_PATH_SLUG } from './constants';
 import type { Categories, Tags } from './interface/explore';
-import type { AudioBookSearchResult, SearchIn } from './interface/search';
+import type { Audiobook } from './interface/audiobook';
+import type { AudiobookSearchResult, SearchOptions } from './interface/search';
 import { getAudiobook } from './utils/getAudiobook';
 import { searchAudiobooks } from './utils/searchAudiobooks';
+import { getAudiobookUrl, getSearchUrl } from './utils/url';
 
 /**
  * Search Audiobooks
  *
  * @param query Audiobook Search query
- * @param page Current Page
+ * @param options Search options
+ * @param options.page Current Page
+ * @param options.searchIn Which fields should be searched for the query string
+ * @param options.includeCategories Which categories to include in the search
+ * @param options.excludeCategories Which categories to exclude from the search
+ * @param baseUrl Base URL for audiobooks to scrape
  * @returns Audiobook List
  */
 export const search = async (
   query: string,
-  page: number = 1,
-  searchIn: SearchIn = { content: true, titleAuthor: true, torrent: true }
-): Promise<AudioBookSearchResult> => {
+  options?: Partial<SearchOptions>,
+  baseUrl: string = AUDIOBOOKBAY_URL
+): Promise<AudiobookSearchResult> => {
   try {
-    const { titleAuthor, content, torrent } = searchIn;
+    const url = getSearchUrl(query, options, baseUrl);
 
-    const params = new URLSearchParams({
-      s: query.toLowerCase(),
-      tt: [titleAuthor ? '1' : '', content ? '2' : '', torrent ? '3' : '']
-        .filter(Boolean)
-        .join(','),
-    });
-    const url = `${AUDIOBOOKBAY_URL}/page/${page}/?${params.toString()}`;
-
-    return await searchAudiobooks(url);
+    return await searchAudiobooks(url, baseUrl);
   } catch (error) {
     console.error(error);
     throw new Error('Nothing was found');
@@ -40,16 +38,18 @@ export const search = async (
  * Get Audiobook
  *
  * @param id Audiobook url
- * @param domain AudioBookBay site url
+ * @param baseUrl AudioBookBay site url
  * @returns Single Audiobook
  */
 export const audiobook = async (
   id: string,
-  domain?: string
-): Promise<AudiobookDetails> => {
+  baseUrl: string = AUDIOBOOKBAY_URL
+): Promise<Audiobook> => {
   try {
-    return await getAudiobook(id, domain);
+    const audiobookUrl = getAudiobookUrl(baseUrl, id);
+    return await getAudiobook(id, audiobookUrl);
   } catch (error) {
+    console.error(error);
     throw new Error('Failed to get Audiobook');
   }
 };
@@ -64,15 +64,17 @@ export const audiobook = async (
 export const explore = async (
   type: 'category' | 'tag',
   explore: Categories | Tags,
-  page: number = 1
-): Promise<AudioBookSearchResult> => {
+  page: number = 1,
+  baseUrl: string = AUDIOBOOKBAY_URL
+): Promise<AudiobookSearchResult> => {
   try {
-    return await searchAudiobooks(
-      `${AUDIOBOOKBAY_URL}/audio-books/${
-        type === 'category' ? 'type' : 'tag'
-      }/${explore}/${page !== 1 ? 'page/' + page + '/' : ''}`
-    );
+    const exploreUrl = `${baseUrl}/${EXPLORE_PATH_SLUG}/${
+      type === 'category' ? 'type' : 'tag'
+    }/${explore}/${page !== 1 ? 'page/' + page + '/' : ''}`;
+
+    return await searchAudiobooks(exploreUrl, baseUrl);
   } catch (error) {
+    console.error(error);
     throw new Error('You can explore only by category and tag');
   }
 };

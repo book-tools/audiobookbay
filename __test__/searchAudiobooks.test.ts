@@ -14,22 +14,24 @@ const expectedData = (data: {
       pagination: {
         currentPage: expect.any(Number),
         totalPages: expect.any(Number),
+        count: expect.any(Number),
       },
       data: expect.arrayContaining([
-        {
+        expect.objectContaining({
           title: expect.any(String),
           id: expect.any(String),
+          authors: expect.any(Array),
           categories: expect.any(Array),
-          lang: expect.any(String),
-          cover: expect.any(String),
-          posted: expect.any(String),
-          info: {
-            format: expect.any(String),
-            unit: expect.any(String),
-            size: expect.any(String),
-            sizeUnit: expect.any(String),
+          language: expect.any(String),
+          cover: expect.toBeOneOf([expect.any(String), null]),
+          posted: expect.toBeOneOf([expect.any(String), null]),
+          specs: {
+            format: expect.toBeOneOf([expect.any(String), null]),
+            bitrate: expect.toBeOneOf([expect.any(String), null]),
+            bitrateKbps: expect.toBeOneOf([expect.any(Number), null]),
+            size: expect.toBeOneOf([expect.any(Number), null]),
           },
-        },
+        }),
       ]),
     })
   );
@@ -38,14 +40,18 @@ const expectedData = (data: {
 describe('Search Audiobooks', () => {
   test('Search Audiobook', async () => {
     expectedData(
-      await searchAudiobooks(`${AUDIOBOOKBAY_URL}/page/1/?s=dune&tt=1,2,3`)
+      await searchAudiobooks(
+        `${AUDIOBOOKBAY_URL}/page/1/?s=dune&tt=1,2,3`,
+        AUDIOBOOKBAY_URL
+      )
     );
   });
 
   test('Explore Audiobook', async () => {
     expectedData(
       await searchAudiobooks(
-        `${AUDIOBOOKBAY_URL}/audio-books/type/fantasy/page/2/`
+        `${AUDIOBOOKBAY_URL}/audio-books/type/fantasy/page/2/`,
+        AUDIOBOOKBAY_URL
       )
     );
   });

@@ -1,7 +1,9 @@
+import { inspect } from 'util';
 import pc from 'picocolors';
-import { AudioBookSearchResult } from '../src/interface/search';
+import { AudiobookSearchResult } from '../src/interface/search';
 import { search } from '../src/index';
 import { getAudiobook } from '../src/utils/getAudiobook';
+import { AUDIOBOOKBAY_URL } from '../src/constants';
 
 // search params
 const searchTerm = 'John Bierce';
@@ -12,9 +14,9 @@ async function main() {
   // setup variables
   const maxPages = 5;
   let currentPage = 0;
-  let searchResult: AudioBookSearchResult = {
+  let searchResult: AudiobookSearchResult = {
     data: [],
-    pagination: { currentPage: 0, totalPages: 1 },
+    pagination: { currentPage: 0, totalPages: 1, count: 0 },
   };
 
   // search for audio books
@@ -23,7 +25,9 @@ async function main() {
     currentPage < maxPages
   ) {
     currentPage += 1;
-    const nextPage = await search(searchTerm.toLowerCase().trim(), currentPage);
+    const nextPage = await search(searchTerm.toLowerCase().trim(), {
+      page: currentPage,
+    });
     searchResult.data = searchResult.data.concat(nextPage.data); // add results to original array
     searchResult.pagination = nextPage.pagination; // update pagination
   }
@@ -48,8 +52,12 @@ async function main() {
   for (const item of searchResult.data) {
     console.log(`${pos} - ${pc.green(item.title)} - ${pc.gray(item.id)}`);
     if (getMagnetLink) {
-      const book = await getAudiobook(item.id);
+      const book = await getAudiobook(item.id, AUDIOBOOKBAY_URL);
       console.log('magnetUrl: ' + pc.yellow(pc.dim(book.torrent.magnetUrl)));
+      console.log('Full Book JSON:');
+      console.log(
+        inspect(book, { showHidden: false, depth: null, colors: true })
+      );
       console.log(pc.blue(`---------------`));
       // wait 500ms before next request to avoid rate limiting
       await new Promise((resolve) => setTimeout(resolve, 500));

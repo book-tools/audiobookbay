@@ -1,13 +1,17 @@
 import type { SearchAudiobook } from './audiobook';
 
-export interface AudioBookSearchResult {
+export interface AudiobookSearchResult {
   data: SearchAudiobook[];
   pagination: Pagination;
 }
 
 export interface Pagination {
+  /** The current page of the search results */
   currentPage: number;
+  /** The total number of pages available */
   totalPages: number;
+  /** The total number of results found on the current page */
+  count: number;
 }
 
 /**
@@ -32,4 +36,11 @@ export interface SearchIn {
    * @defaultValue true
    */
   torrent: boolean;
+}
+
+export interface SearchOptions {
+  /** The page of search results to pull */
+  page: number;
+  /** Which fields should be searched for the query string */
+  searchIn: Partial<SearchIn>;
 }

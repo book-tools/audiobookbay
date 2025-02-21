@@ -1,21 +1,22 @@
 import { load as loadCheerioPage } from 'cheerio';
-import { AUDIOBOOKBAY_URL } from '../constants';
-import type { AudioBookSearchResult, Pagination } from '../interface/search';
+import type { AudiobookSearchResult, Pagination } from '../interface/search';
 import type { SearchAudiobook } from '../interface/audiobook';
+import {
+  cleanString,
+  parseBitrate,
+  parseCoverUrl,
+  parseDate,
+  parseFileSize,
+  parseFormat,
+  parseTitleAuthor,
+  parseUrlSlug,
+} from './fields';
 
-/**
- * Search Audiobooks
- *
- * @param {string} url URL for audiobooks to scrape
- * @param {string} domain URL for audiobooks to scrape
- */
-export const searchAudiobooks = async (
-  url: string,
-  domain?: string
-): Promise<AudioBookSearchResult> => {
-  const request = await fetch(url);
-  const results = await request.text();
-  const $ = loadCheerioPage(results);
+export const parseSearchAudiobooks = (
+  baseUrl: string,
+  html: string
+): AudiobookSearchResult => {
+  const $ = loadCheerioPage(html);
 
   // Nothing is Found Error
   if ($(`#content h3`).text().trim() === 'Not Found') {
@@ -23,135 +24,123 @@ export const searchAudiobooks = async (
   }
   // Get Details for each audiobook
   const data: SearchAudiobook[] = [];
-  const posts = $(`#content div.post`);
 
-  posts.each((_i, elementItem) => {
+  $(`#content div.post`).each((_, elementItem) => {
     // assign the element to a variable, we may need to override it
-    let element = $(elementItem);
-    let postRoot = $;
+    let postEl = $(elementItem);
 
-    const isBase64ElementBody = element.attr('class')?.includes('post re-ab');
+    const isBase64ElementBody = postEl.attr('class')?.includes('post re-ab');
     // so.... sometimes the post body is encoded in base64, so we need to decode it...
     // guessing this is some type of cacheing thingy????
     if (isBase64ElementBody) {
       // lets change our element and postRoot to use the decoded element
-      const postAsBase64 = postRoot(element).text();
-      postRoot = loadCheerioPage(
-        Buffer.from(postAsBase64, 'base64').toString('utf8')
-      );
-      element = postRoot('body');
+      const postAsBase64 = postEl.text();
+      const postAsUtf8 = Buffer.from(postAsBase64, 'base64').toString('utf8');
+      const newPage = loadCheerioPage(postAsUtf8);
+      postEl = newPage('body');
     }
 
-    const audiobookTitleEl = postRoot(element).find(`div.postTitle h2 a`);
+    const titleEl = postEl.find(`div.postTitle h2 a`);
 
     // Title
-    const title = audiobookTitleEl.text();
+    const { title, authors } = parseTitleAuthor(titleEl.text());
 
     // ID
-    let id = '';
-    const bookHref = audiobookTitleEl.attr('href');
+    let id: string | undefined;
+    const bookUrl = titleEl.attr('href');
 
-    if (bookHref) {
-      id = bookHref.split('/').filter(Boolean).pop() ?? '';
+    if (bookUrl) {
+      id = parseUrlSlug(bookUrl);
+    } else {
+      return;
     }
 
-    const postInfo = postRoot(element).find(`.postInfo`).text();
-
     // Category
-    const categories = postInfo
-      .split('Language:')[0]
+    const categories = postEl
+      .find(`.postInfo`)
+      .text()
+      ?.split('Language:')[0]
       .replace('Category:', '')
       .trim()
       .split(String.fromCharCode(160))
-      .map((e) => e.trim());
+      .map(cleanString);
 
     // Language
-    let lang = '';
-
-    if (
-      postInfo.indexOf('Language:') >= 0 &&
-      postInfo.indexOf('Keywords:') >= 0
-    ) {
-      lang = postInfo.split('Language: ')[1].split(`Keywords:`)[0];
-    }
+    const language = cleanString(
+      postEl
+        .find(`.postInfo`)
+        .text()
+        ?.split(`Language:`)[1]
+        .split(`Keywords:`)[0]
+    );
 
     // Cover
-    let cover: string = `${
-      domain ?? `${AUDIOBOOKBAY_URL}/images/default_cover.jpg`
-    }`;
-    const coverUrl = postRoot(element).find(`.postContent img`).attr('src');
-
-    if (coverUrl && coverUrl !== '') {
-      cover = coverUrl;
-    }
+    const coverSrc = postEl.find(`.postContent img`).attr('src');
+    const cover = parseCoverUrl(baseUrl, coverSrc);
 
     // Posted
-    const posted = postRoot(`p[style="text-align:center;"]`)
+    const postedStr = $(`p[style="text-align:center;"]`)
       .text()
-      .split('Posted:')[1]
-      .split('Format:')[0]
-      .trim();
+      ?.split(`Posted: `)[1]
+      ?.split(`Format: `)[0];
+    const posted = parseDate(postedStr);
 
     // Format
-    const format = postRoot(element)
-      .find(`.postContent span[style="color:#a00;"]:nth-child(2)`)
-      .text();
+    const format = parseFormat(
+      postEl.find(`.postContent span[style="color:#a00;"]:nth-child(2)`).text()
+    );
 
     // Unit
-    const unit = postRoot(element)
+    const bitrateStr = postEl
       .find(`.postContent span[style="color:#a00;"]:nth-child(3)`)
       .text();
+    const { bitrate, bitrateKbps } = parseBitrate(bitrateStr);
 
     // Size
-    const size = postRoot(element)
-      .find(`.postContent span[style="color:#00f;"]`)
-      .text();
-
-    const sizeUnitText = postRoot(element)
+    let sizeStr = postEl.find(`.postContent span[style="color:#00f;"]`).text();
+    sizeStr += postEl
       .find(`p[style="text-align:center;"]`)
-      .text();
+      .text()
+      .split(sizeStr)[1]
+      .trim();
 
-    let sizeUnit = '';
-    if (
-      sizeUnitText.indexOf(size) >= 0 &&
-      sizeUnitText.split(size).length > 0
-    ) {
-      sizeUnit = sizeUnitText.split(size)[1].trim();
-    }
+    const size = parseFileSize(sizeStr);
 
     const audiobook: SearchAudiobook = {
-      title: title,
       id,
+      title,
+      authors,
       categories,
-      lang,
+      language,
       cover,
       posted,
-      info: {
+      specs: {
         format,
-        unit,
+        bitrate,
+        bitrateKbps,
         size,
-        sizeUnit,
       },
     };
 
     data.push(audiobook);
   });
 
-  // Paggination
+  // Pagination
   const pagination: Pagination = {
-    currentPage: 0,
-    totalPages: 0,
+    currentPage: 1,
+    totalPages: 1,
+    count: data.length,
   };
 
-  if ($(`.navigation .current`).text() !== '') {
-    const currentPage = parseInt($(`.navigation .current`).text());
-    let total: number = 0;
+  if ($(`.navigation .current`).text()) {
+    const currentPage = parseInt($(`.navigation .current`).text(), 10);
+    let total = 0;
 
     if ($(`.navigation .wp-pagenavi a:last-child`).text() === '»»') {
-      const totalEl = $(`.navigation .wp-pagenavi a:last-child`).attr('href');
+      const totalHref = $(`.navigation .wp-pagenavi a:last-child`).attr('href');
 
-      if (totalEl) {
-        total = parseInt(totalEl.split('/page/')[1].split('/')[0], 10);
+      if (totalHref) {
+        total = parseInt(totalHref.split('/page/')[1].split('/')[0], 10);
       }
     } else {
       total = parseInt(
@@ -168,10 +157,25 @@ export const searchAudiobooks = async (
     pagination.totalPages = total;
   }
 
-  const result: AudioBookSearchResult = {
+  const result: AudiobookSearchResult = {
     pagination,
     data,
   };
 
   return result;
+};
+
+/**
+ * Search Audiobooks
+ *
+ * @param {string} url URL for audiobooks to scrape
+ * @param {string} baseUrl Base URL for audiobooks to scrape
+ */
+export const searchAudiobooks = async (
+  url: string,
+  baseUrl: string
+): Promise<AudiobookSearchResult> => {
+  const request = await fetch(url);
+  const results = await request.text();
+  return parseSearchAudiobooks(baseUrl, results);
 };

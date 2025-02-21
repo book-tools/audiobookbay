@@ -56,6 +56,8 @@ export type CategoryModifiers =
   | 'novel'
   | 'short-story';
 
+export type ExploreType = 'category' | 'tag';
+
 export type Categories = AgeCategory | Category | CategoryModifiers;
 
 export type Tags = 'english' | 'dutch' | 'french' | 'spanish' | 'german';
