@@ -1,6 +1,5 @@
-node_modules
-dist
+node_modules/
+dist/
+coverage/
 
-pnpm-lock.yaml
-
-local-playground.test.ts
+.DS_Store

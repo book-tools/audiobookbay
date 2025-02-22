@@ -5,7 +5,7 @@
  * - https://audiobookbay.fi
  * - https://audiobookbay.is
  */
-export const AUDIOBOOKBAY_URL = 'https://audiobookbay.is';
+export const AUDIOBOOKBAY_URL = 'https://audiobookbay.fi';
 export const AUDIOBOOK_PATH_SLUG = 'abss';
 export const EXPLORE_PATH_SLUG = 'audio-books';
 export const USER_AGENT =

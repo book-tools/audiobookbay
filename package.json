@@ -30,7 +30,8 @@
     "build": "tsup",
     "coverage": "vitest run --coverage",
     "example": "tsx ./playground/usage-example.ts",
-    "lint": "npm run lint:src && npm run lint:types",
+    "lint": "npm run lint:src && npm run lint:types && npm run lint:exports",
+    "lint:exports": "attw --pack .",
     "lint:src": "eslint .",
     "lint:types": "tsc",
     "test": "vitest"
@@ -42,6 +43,7 @@
     "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.17.4",
     "@eslint/js": "^9.21.0",
     "@types/cheerio": "^0.22.35",
     "@types/filesize-parser": "^1.5.3",
