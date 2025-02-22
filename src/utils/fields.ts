@@ -48,6 +48,12 @@ export const parseCoverUrl = (
     return baseUrl + trimmedCoverSrc;
   }
 
+  // Simplify cover URLs from Amazon (and Audible) for a potential increase in resolution
+  const amazonCoverSizeRegex = /\._SL\d+_/;
+  if (amazonCoverSizeRegex.test(trimmedCoverSrc)) {
+    return trimmedCoverSrc.replace(amazonCoverSizeRegex, '');
+  }
+
   return trimmedCoverSrc;
 };
 

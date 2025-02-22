@@ -22,8 +22,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Fantasy'],
             language: 'Spanish',
-            cover:
-              'https://m.media-amazon.com/images/I/51dMWPi24NL._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/51dMWPi24NL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'M4B',
@@ -40,8 +39,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Children', 'Fantasy'],
             language: 'French',
-            cover:
-              'https://m.media-amazon.com/images/I/6153sJbSmNL._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/6153sJbSmNL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'MP3',
@@ -58,8 +56,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Children', 'Fantasy'],
             language: 'French',
-            cover:
-              'https://m.media-amazon.com/images/I/51q+IsfG1JL._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/51q+IsfG1JL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'MP3',
@@ -76,8 +73,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Children', 'Fantasy'],
             language: 'French',
-            cover:
-              'https://m.media-amazon.com/images/I/51lbIDsiEeL._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/51lbIDsiEeL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'MP3',
@@ -93,8 +89,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Children', 'Fantasy'],
             language: 'French',
-            cover:
-              'https://m.media-amazon.com/images/I/61wPs39m8kL._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/61wPs39m8kL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'MP3',
@@ -111,8 +106,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Children', 'Fantasy'],
             language: 'French',
-            cover:
-              'https://m.media-amazon.com/images/I/51602UnVOnL._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/51602UnVOnL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'MP3',
@@ -129,8 +123,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Children', 'Fantasy'],
             language: 'French',
-            cover:
-              'https://m.media-amazon.com/images/I/61MwCxsbkOL._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/61MwCxsbkOL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'MP3',
@@ -147,8 +140,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Children', 'Fantasy'],
             language: 'French',
-            cover:
-              'https://m.media-amazon.com/images/I/51tYQFOBhOL._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/51tYQFOBhOL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'MP3',
@@ -164,8 +156,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['J.K. Rowling'],
             categories: ['Children', 'Fantasy'],
             language: 'Norwegian',
-            cover:
-              'https://m.media-amazon.com/images/I/81mD0oA2ouL._SL1500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/81mD0oA2ouL.jpg',
             posted: '2025-02-05T05:00:00.000Z',
             specs: {
               format: 'MP3',
@@ -216,8 +207,7 @@ describe('Parse Audiobook Search Results', () => {
             authors: ['Skyler Grant'],
             categories: ['Adults', 'Fantasy', 'Sci-Fi'],
             language: 'English',
-            cover:
-              'https://m.media-amazon.com/images/I/51D1uAoYh-L._SL500_.jpg',
+            cover: 'https://m.media-amazon.com/images/I/51D1uAoYh-L.jpg',
             posted: null,
             specs: {
               format: 'M4B',
