@@ -14,6 +14,37 @@ import {
 import { fetchPageContent } from './url';
 import { AUDIOBOOKBAY_URL } from '../constants';
 
+export const getHtmlPostContent = (postContent: string): string => {
+  const $ = loadCheerioPage(postContent);
+
+  // Get the post element
+  const postEl = $('div.post');
+
+  // Check if the post element is encoded in base64
+  const isBase64ElementBody = postEl.attr('class')?.includes('post re-ab');
+  // so.... sometimes the post body is encoded in base64, so we need to decode it...
+  // guessing this is some type of caching thingy????
+  if (isBase64ElementBody) {
+    // lets change our element and postRoot to use the decoded element
+    const postAsBase64 = postEl.text();
+    const postAsUtf8 = Buffer.from(postAsBase64, 'base64').toString('utf8');
+    const newPage = loadCheerioPage(postAsUtf8);
+
+    const postHtml = newPage('body').html();
+    if (!postHtml) {
+      throw new Error('Failed to get post content');
+    }
+    return postHtml;
+  }
+
+  const postHtml = postEl.html();
+  if (!postHtml) {
+    throw new Error('Failed to get post content');
+  }
+
+  return postHtml;
+};
+
 export const parseSearchAudiobooks = (
   html: string,
   baseUrl: string = AUDIOBOOKBAY_URL
@@ -27,20 +58,10 @@ export const parseSearchAudiobooks = (
   // Get Details for each audiobook
   const data: SearchAudiobook[] = [];
 
-  $(`#content div.post`).each((_, elementItem) => {
-    // assign the element to a variable, we may need to override it
-    let postEl = $(elementItem);
-
-    const isBase64ElementBody = postEl.attr('class')?.includes('post re-ab');
-    // so.... sometimes the post body is encoded in base64, so we need to decode it...
-    // guessing this is some type of cacheing thingy????
-    if (isBase64ElementBody) {
-      // lets change our element and postRoot to use the decoded element
-      const postAsBase64 = postEl.text();
-      const postAsUtf8 = Buffer.from(postAsBase64, 'base64').toString('utf8');
-      const newPage = loadCheerioPage(postAsUtf8);
-      postEl = newPage('body');
-    }
+  $(`#content div.post`).each((_, initialPostEl) => {
+    const postElHtml = $(initialPostEl).prop('outerHTML');
+    const postContent = getHtmlPostContent(postElHtml);
+    const postEl = loadCheerioPage(postContent)('body');
 
     const titleEl = postEl.find(`div.postTitle h2 a`);
 
