@@ -34,6 +34,14 @@ export const parseTitleAuthor = (fullTitle: string): TitleAuthor => {
   return { title, authors };
 };
 
+/**
+ * This string is used by both Audible and Amazon to augment the image size before serving
+ *
+ * @example ._SL500_
+ * @example ._SL1500_
+ */
+const AMAZON_COVER_SIZE_REGEX = /\._SL\d+_/;
+
 export const parseCoverUrl = (
   baseUrl: string,
   coverSrc: string | undefined
@@ -49,9 +57,8 @@ export const parseCoverUrl = (
   }
 
   // Simplify cover URLs from Amazon (and Audible) for a potential increase in resolution
-  const amazonCoverSizeRegex = /\._SL\d+_/;
-  if (amazonCoverSizeRegex.test(trimmedCoverSrc)) {
-    return trimmedCoverSrc.replace(amazonCoverSizeRegex, '');
+  if (AMAZON_COVER_SIZE_REGEX.test(trimmedCoverSrc)) {
+    return trimmedCoverSrc.replace(AMAZON_COVER_SIZE_REGEX, '');
   }
 
   return trimmedCoverSrc;
