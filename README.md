@@ -1,12 +1,12 @@
-# ✨🎧AudioBookBay Scraper🎧✨
+# @book-tools/audiobookbay
 
-## 🏁 Install
+## Install
 
 ```shh
-npm install audiobookbay
+npm install @book-tools/audiobookbay
 ```
 
-## 🔍 Search Audiobooks
+## Search Audiobooks
 
 | Name      | Description            | Default                                               | Type   |
 | --------- | ---------------------- | ----------------------------------------------------- | ------ |
@@ -17,7 +17,7 @@ npm install audiobookbay
 <br>
 
 ```js
-import { search } from 'audiobookbay';
+import { search } from '@book-tools/audiobookbay';
 
 const audiobooks = await search('dune', 1, {
   titleAuthor: true,
@@ -28,31 +28,30 @@ const audiobooks = await search('dune', 1, {
 
 ```json
 {
- "pagination": {
-  "currentPage": "Current Page",
-  "total": "Total Pages"
- },
- "data": [
-   {
-     "title": "Audiobook Title",
-     "url":
-       "Audiobook URL",
-     "categories":
-       ["Array of Categories"],
-     "language": "Audiobook Language",
-     "cover": "Audiobook Cover",
-     "posted": "Date when Audiobook was posted",
-     "info": {
-         "format": "Audiobook Format",
-         "bitrate": "Audiobook Bitrate",
-         "size": ["Audiobook Size","Size UNIT"]
-     }
-   }, ...
- ]
+  "pagination": {
+    "currentPage": "Current Page",
+    "total": "Total Pages"
+  },
+  "data": [
+    {
+      "title": "Audiobook Title",
+      "url": "Audiobook URL",
+      "categories": ["Array of Categories"],
+      "language": "Audiobook Language",
+      "cover": "Audiobook Cover",
+      "posted": "Date when Audiobook was posted",
+      "info": {
+        "format": "Audiobook Format",
+        "bitrate": "Audiobook Bitrate",
+        "size": ["Audiobook Size", "Size UNIT"]
+      }
+    }
+    //  ...
+  ]
 }
 ```
 
-### 🪣 Explore By Category/Tag
+### Explore By Category/Tag
 
 #### Category Options
 
@@ -88,7 +87,7 @@ const audiobooks = await search('dune', 1, {
 <br>
 
 ```js
-import { explore } from 'audiobookbay';
+import { explore } from '@book-tools/audiobookbay';
 
 const audiobooks = await explore('category', 'postapocalyptic', 2);
 ```
@@ -97,31 +96,30 @@ const audiobooks = await explore('category', 'postapocalyptic', 2);
 
 ```json
 {
- "pagination": {
-  "currentPage": "Current Page",
-  "total": "Total Pages"
- },
- "data": [
-   {
-     "title": "Audiobook Title",
-     "url":
-       "Audiobook URL",
-     "category":
-       ["Array of Categories"],
-     "language": "Audiobook Language",
-     "cover": "Audiobook Cover",
-     "posted": "Date when Audiobook was posted",
-     "info": {
-         "format": "Audiobook Format",
-         "bitrate": "Audiobook Bitrate",
-         "size": ["Audiobook Size","Size UNIT"]
-     }
-   }, ...
- ]
+  "pagination": {
+    "currentPage": "Current Page",
+    "total": "Total Pages"
+  },
+  "data": [
+    {
+      "title": "Audiobook Title",
+      "url": "Audiobook URL",
+      "category": ["Array of Categories"],
+      "language": "Audiobook Language",
+      "cover": "Audiobook Cover",
+      "posted": "Date when Audiobook was posted",
+      "info": {
+        "format": "Audiobook Format",
+        "bitrate": "Audiobook Bitrate",
+        "size": ["Audiobook Size", "Size UNIT"]
+      }
+    }
+    // ...
+  ]
 }
 ```
 
-### 🎵 Get Audiobook
+### Get Audiobook
 
 | Name | Description  | Default | Type   |
 | ---- | ------------ | ------- | ------ |
@@ -130,7 +128,7 @@ const audiobooks = await explore('category', 'postapocalyptic', 2);
 <br>
 
 ```js
-import { audiobook } from 'audiobookbay';
+import { audiobook } from '@book-tools/audiobookbay';
 
 const audiobook = await audiobook(
   'the-road-to-dune-brian-herbert-kevin-j-anderson-frank-herbert'
@@ -158,7 +156,7 @@ const audiobook = await audiobook(
     "hash": "Audiobook Hash",
     "trackers": ["Audiobook Trackers"],
     "size": ["Audiobook size", "Size UNIT"],
-    "magnetUrl": "Magnet Link" // 🧲 Magnet Link
+    "magnetUrl": "Magnet Link"
   },
   "related": [
     {
@@ -178,7 +176,7 @@ Included is an example using the library.
 To run it from this repo.
 
 ```bash
-pnpm example
+npm run example
 ```
 
 ![](./docs/images/example-screenshot.png)
