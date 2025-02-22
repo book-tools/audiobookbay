@@ -5,7 +5,7 @@ import {
   cleanString,
   parseBitrate,
   parseCoverUrl,
-  parseDate,
+  parseDateTime,
   parseFileSize,
   parseFormat,
   parseTitleAuthor,
@@ -111,7 +111,7 @@ export const parseAudiobook = (
         break;
 
       case 'Creation Date:':
-        posted = parseDate(tdSecond);
+        posted = parseDateTime(tdSecond);
         break;
 
       case 'File Size:':

@@ -141,6 +141,26 @@ export const parseDate = (dateStr: string | undefined): string | null => {
   return date.toISOString();
 };
 
+/**
+ * Parse a string representing a date into ISO 8601 format
+ *
+ * @param dateStr - A string representing a date
+ * @returns An ISO 8601 date string or null if the date is invalid
+ * @see {@link https://en.wikipedia.org/wiki/ISO_8601}
+ */
+export const parseDateTime = (dateStr: string | undefined): string | null => {
+  if (!dateStr) {
+    return null;
+  }
+
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date.toISOString();
+};
+
 export const parseUrlSlug = (url: string): string => {
   const urlPathArr = url.split('/').filter(Boolean);
   return urlPathArr[urlPathArr.length - 1];
