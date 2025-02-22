@@ -2,178 +2,208 @@
 
 ## Install
 
-```shh
+```sh
 npm install @book-tools/audiobookbay
 ```
 
 ## Search Audiobooks
 
-| Name      | Description            | Default                                               | Type   |
-| --------- | ---------------------- | ----------------------------------------------------- | ------ |
-| Query     | Search Query           |                                                       | String |
-| Page      | Search Page            | 1                                                     | Number |
-| Search In | Text content to search | `{ titleAuthor: true, content: true, torrent: true }` | Object |
+### Options
 
-<br>
+| Name      | Description               | Default                                                                      | Type            |
+| --------- | ------------------------- | ---------------------------------------------------------------------------- | --------------- |
+| `query`   | Search Query              |                                                                              | `string`        |
+| `options` | Search Options            | `{ page: 1, searchIn: { titleAuthor: true, content: true, torrent: true } }` | `SearchOptions` |
+| `baseUrl` | Base URL for audiobookbay | `'https://audiobookbay.fi'`                                                  | `string`        |
 
-```js
+#### SearchOptions
+
+```ts
+interface SearchOptions {
+  /** The page of search results to pull */
+  page: number;
+  /** Which fields should be searched for the query string */
+  searchIn: {
+    /**
+     * Search in Title and Authors fields
+     *
+     * @defaultValue true
+     */
+    titleAuthor: boolean;
+    /**
+     * Search in book page's Content
+     *
+     * @defaultValue true
+     */
+    content: boolean;
+    /**
+     * Search in the torrent's contents
+     *
+     * @defaultValue true
+     */
+    torrent: boolean;
+  };
+}
+```
+
+### Example
+
+```ts
 import { search } from '@book-tools/audiobookbay';
 
-const audiobooks = await search('dune', 1, {
-  titleAuthor: true,
+// Search for "dune" with only the title and authors fields (generally the most relevant)
+const audiobooks = await search('dune', {
+  page: 1,
+  searchIn: {
+    titleAuthor: true,
+    content: false,
+    torrent: false,
+  },
 });
 ```
 
 ### Response
 
-```json
-{
-  "pagination": {
-    "currentPage": "Current Page",
-    "total": "Total Pages"
-  },
-  "data": [
-    {
-      "title": "Audiobook Title",
-      "url": "Audiobook URL",
-      "categories": ["Array of Categories"],
-      "language": "Audiobook Language",
-      "cover": "Audiobook Cover",
-      "posted": "Date when Audiobook was posted",
-      "info": {
-        "format": "Audiobook Format",
-        "bitrate": "Audiobook Bitrate",
-        "size": ["Audiobook Size", "Size UNIT"]
-      }
-    }
-    //  ...
-  ]
+```ts
+/** An audiobook object returned from a search */
+interface SearchAudiobook extends BaseAudiobook {
+  /** A list of AudioBookBay categories applied to the book */
+  categories: string[];
+  /** The full name of the audiobook's language */
+  language: string;
+  /** The URL for the book's cover image */
+  cover: string | null;
+  /** An ISO date string of the book's posting date */
+  posted: string | null;
+  /** Information about the audio files */
+  specs: AudiobookSpecs;
+}
+
+interface AudiobookSearchResult {
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    count: number;
+  };
+  data: SearchAudiobook[];
 }
 ```
 
-### Explore By Category/Tag
+## Explore Audiobooks
 
-#### Category Options
+### Options
 
-<ul>
-  <li>
-    Age: children, teen-young-adult, adults, the-undead
-  </li>
+| Name      | Description                | Default                     | Type                    |
+| --------- | -------------------------- | --------------------------- | ----------------------- |
+| `type`    | Explore type               | `'category'`                | `'category'` \| `'tag'` |
+| `explore` | Category or tag to explore |                             | `Categories` \| `Tags`  |
+| `page`    | Page number                | 1                           | `number`                |
+| `baseUrl` | Base URL for audiobookbay  | `'https://audiobookbay.fi'` | `string`                |
 
-  <li>
-    Category: postapocalyptic, action, adventure, art, autobiography-biographies, business, computer, contemporary, crime, detective, doctor-who-sci-fi, education, fantasy, general-fiction, historical-fiction, history, horror, lecture, lgbt, literature, litrpg, general-non-fiction, mystery, paranormal, plays-theater, poetry, political, radio-productions, romance, sci-fi, science, self-help, spiritual, sports, suspense, thriller, true-crime, tutorial, westerns
-    </ul>
-  </li>
+#### Categories & Tags
 
-  <li>
-    Category Modifiers: anthology, bestsellers, classic, documentary, full-cast, libertarian, military, novel, short-story
-  </li>
-</ul>
+```ts
+type AgeCategory = 'children' | 'teen-young-adult' | 'adults' | 'the-undead';
 
-#### Tag Options
+type Category = 'postapocalyptic' | 'action' | 'adventure' | /* ... */ | 'westerns';
 
-<ul>
-  <li>
-  Popular Language: english, dutch, french, spanish, german
-  </li>
-</ul>
+type CategoryModifiers = 'anthology' | 'bestsellers' | /* ... */ | 'short-story';
 
-| Name   | Description              | Default  | Type   |
-| ------ | ------------------------ | -------- | ------ |
-| Type   | Explore by tag, category | category | String |
-| Option | Options filter           |          | String |
-| Page   | Page Number              | 1        | String |
+type Tags = 'english' | 'dutch' | 'french' | 'spanish' | 'german';
+```
 
-<br>
+### Example
 
-```js
+```ts
 import { explore } from '@book-tools/audiobookbay';
 
-const audiobooks = await explore('category', 'postapocalyptic', 2);
+const audiobooks = await explore('category', 'fantasy', 2);
 ```
 
-### Response
+## Get Single Audiobook
 
-```json
-{
-  "pagination": {
-    "currentPage": "Current Page",
-    "total": "Total Pages"
-  },
-  "data": [
-    {
-      "title": "Audiobook Title",
-      "url": "Audiobook URL",
-      "category": ["Array of Categories"],
-      "language": "Audiobook Language",
-      "cover": "Audiobook Cover",
-      "posted": "Date when Audiobook was posted",
-      "info": {
-        "format": "Audiobook Format",
-        "bitrate": "Audiobook Bitrate",
-        "size": ["Audiobook Size", "Size UNIT"]
-      }
-    }
-    // ...
-  ]
-}
-```
+### Options
 
-### Get Audiobook
+| Name    | Description               | Default                     | Type   |
+| ------- | ------------------------- | --------------------------- | ------ |
+| id      | Audiobook ID/slug         |                             | string |
+| baseUrl | Base URL for audiobookbay | `'https://audiobookbay.fi'` | string |
 
-| Name | Description  | Default | Type   |
-| ---- | ------------ | ------- | ------ |
-| ID   | Audiobook ID |         | String |
+### Example
 
-<br>
-
-```js
+```ts
 import { audiobook } from '@book-tools/audiobookbay';
 
-const audiobook = await audiobook(
+const book = await audiobook(
   'the-road-to-dune-brian-herbert-kevin-j-anderson-frank-herbert'
 );
 ```
 
 ### Response
 
-```json
-{
-  "title": "Audiobook title",
-  "category": ["Array of Categories"],
-  "language": "Audiobook Language",
-  "cover": "Audiobook Cover",
-  "author": "Audiobook Author",
-  "read": "Audiobook Reader",
-  "audioSample": "Sample of Audiobook MP3",
-  "specs": {
-    "format": "Audiobook Format",
-    "bitrate": "Audiobook Bitrate"
-  },
-  "abridged": "Is the book shortened",
-  "desc": "Audiobook Description",
-  "torrent": {
-    "hash": "Audiobook Hash",
-    "trackers": ["Audiobook Trackers"],
-    "size": ["Audiobook size", "Size UNIT"],
-    "magnetUrl": "Magnet Link"
-  },
-  "related": [
-    {
-      "title": "Related Audiobook Title",
-      "url": "Related Audiobook URL"
-    }
-  ]
+```ts
+/** The complete audiobook data returned from parsing */
+export interface Audiobook extends SearchAudiobook {
+  // FIELDS FROM BASE AUDIOBOOK
+
+  /** The URL slug of the audiobook's page on AudioBookBay */
+  id: string;
+  /** The title of the book/torrent post */
+  title: string;
+  /** The list of authors' names */
+  authors: string[];
+
+  // FIELDS FROM SEARCH AUDIOBOOK
+
+  /** A list of AudioBookBay categories applied to the book */
+  categories: string[];
+  /** The full name of the audiobook's language */
+  language: string;
+  /** The URL for the book's cover image */
+  cover: string | null;
+  /** An ISO date string of the book's posting date */
+  posted: string | null;
+  /** Information about the audio files */
+  specs: AudiobookSpecs;
+
+  // FIELDS SPECIFIC TO AUDIOBOOK
+
+  /** The list of narrators' names */
+  narrators: string[];
+  /** A URL for an audio sample of the audiobook */
+  audioSample: string | null;
+  /**
+   * The type of abridgement the book has, or null if it is unabridged
+   *
+   * @example "Dramatization"
+   */
+  abridged: string | null;
+  /** A complete text description of the torrent */
+  description: string;
+  torrent: {
+    /** The Info Hash for the torrent */
+    hash: string | null;
+    /** The primary tracker URL for the torrent */
+    announceUrl: string | null;
+    /** A list of tracker URLs for the torrent */
+    trackers: string[];
+    /** The magnet URL for the torrent */
+    magnetUrl: string | null;
+  };
+
+  // RELATED AUDIOBOOKS
+
+  related: BaseAudiobook[];
 }
 ```
 
-## ⚡ Example Usage
+## Example Usage
 
 Included is an example using the library.
 
 [usage-example.ts](./playground/usage-example.ts)
 
-To run it from this repo.
+To run it from this repo:
 
 ```bash
 npm run example

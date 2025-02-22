@@ -1,5 +1,5 @@
 export interface BaseAudiobook {
-  /** The URL slug of the AbbBook's page on AbbBookbay */
+  /** The URL slug of the audiobook's page on AudioBookBay */
   id: string;
   /** The title of the book/torrent post */
   title: string;
@@ -25,11 +25,11 @@ export interface AudiobookSpecs {
   sizeBytes: number | null;
 }
 
-/** An AbbBook object returned from a search */
+/** An audiobook object returned from a search */
 export interface SearchAudiobook extends BaseAudiobook {
-  /** A list of AbbBookbay categories applied to the book */
+  /** A list of AudioBookBay categories applied to the book */
   categories: string[];
-  /** The full name of the AbbBook's language */
+  /** The full name of the audiobook's language */
   language: string;
   /** The URL for the book's cover image */
   cover: string | null;
@@ -39,11 +39,11 @@ export interface SearchAudiobook extends BaseAudiobook {
   specs: AudiobookSpecs;
 }
 
-/** The complete AbbBook data returned from parsing */
+/** The complete audiobook data returned from parsing */
 export interface Audiobook extends SearchAudiobook {
   /** The list of narrators' names */
   narrators: string[];
-  /** A URL for an audio sample of the AbbBook */
+  /** A URL for an audio sample of the audiobook */
   audioSample: string | null;
   /**
    * The type of abridgement the book has, or null if it is unabridged
