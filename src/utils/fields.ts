@@ -103,7 +103,7 @@ export const parseFileSize = (size: string | undefined): number | null => {
   try {
     const fileSize = filesizeParser(trimmedSize);
     return fileSize;
-  } catch (err) {
+  } catch (_err) {
     return null;
   }
 };

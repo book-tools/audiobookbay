@@ -30,6 +30,9 @@
     "build": "tsup",
     "coverage": "vitest run --coverage",
     "example": "tsx ./playground/usage-example.ts",
+    "lint": "npm run lint:src && npm run lint:types",
+    "lint:src": "eslint .",
+    "lint:types": "tsc",
     "test": "vitest"
   },
   "dependencies": {
@@ -39,16 +42,21 @@
     "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.21.0",
     "@types/cheerio": "^0.22.35",
     "@types/filesize-parser": "^1.5.3",
     "@types/html-to-text": "^9.0.4",
     "@types/node-fetch": "^2.6.12",
     "@vitest/coverage-v8": "^3.0.6",
+    "eslint": "^9.21.0",
+    "eslint-config-prettier": "^10.0.1",
+    "globals": "^16.0.0",
     "picocolors": "^1.1.1",
     "prettier": "^3.5.1",
     "tsup": "^8.3.6",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.1",
     "vitest": "^3.0.6"
   },
   "keywords": [

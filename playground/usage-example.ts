@@ -12,7 +12,7 @@ async function main() {
   // setup variables
   const maxPages = 5;
   let currentPage = 0;
-  let searchResult: AudiobookSearchResult = {
+  const searchResult: AudiobookSearchResult = {
     data: [],
     pagination: { currentPage: 0, totalPages: 1, count: 0 },
   };

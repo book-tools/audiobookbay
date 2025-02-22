@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'vitest';
 import { getAudiobook } from '../src/utils/getAudiobook';
-import { AUDIOBOOKBAY_URL } from '../src/constants';
 
 describe('Get Audiobook', () => {
   test('Get By URL', async () => {
