@@ -133,7 +133,7 @@ export const parseDate = (dateStr: string | undefined): string | null => {
     return null;
   }
 
-  const date = new Date(dateStr);
+  const date = new Date(`${dateStr} GMT`);
   if (Number.isNaN(date.getTime())) {
     return null;
   }

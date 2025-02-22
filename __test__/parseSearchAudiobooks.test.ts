@@ -23,7 +23,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Fantasy'],
             language: 'Spanish',
             cover: 'https://m.media-amazon.com/images/I/51dMWPi24NL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'M4B',
               bitrate: '96 Kbps',
@@ -40,7 +40,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Children', 'Fantasy'],
             language: 'French',
             cover: 'https://m.media-amazon.com/images/I/6153sJbSmNL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'MP3',
               bitrate: '96 Kbps',
@@ -57,7 +57,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Children', 'Fantasy'],
             language: 'French',
             cover: 'https://m.media-amazon.com/images/I/51q+IsfG1JL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'MP3',
               bitrate: '96 Kbps',
@@ -74,7 +74,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Children', 'Fantasy'],
             language: 'French',
             cover: 'https://m.media-amazon.com/images/I/51lbIDsiEeL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'MP3',
               bitrate: '96 Kbps',
@@ -90,7 +90,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Children', 'Fantasy'],
             language: 'French',
             cover: 'https://m.media-amazon.com/images/I/61wPs39m8kL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'MP3',
               bitrate: '96 Kbps',
@@ -107,7 +107,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Children', 'Fantasy'],
             language: 'French',
             cover: 'https://m.media-amazon.com/images/I/51602UnVOnL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'MP3',
               bitrate: '96 Kbps',
@@ -124,7 +124,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Children', 'Fantasy'],
             language: 'French',
             cover: 'https://m.media-amazon.com/images/I/61MwCxsbkOL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'MP3',
               bitrate: '96 Kbps',
@@ -141,7 +141,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Children', 'Fantasy'],
             language: 'French',
             cover: 'https://m.media-amazon.com/images/I/51tYQFOBhOL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'MP3',
               bitrate: '96 Kbps',
@@ -157,7 +157,7 @@ describe('Parse Audiobook Search Results', () => {
             categories: ['Children', 'Fantasy'],
             language: 'Norwegian',
             cover: 'https://m.media-amazon.com/images/I/81mD0oA2ouL.jpg',
-            posted: '2025-02-05T05:00:00.000Z',
+            posted: '2025-02-05T00:00:00.000Z',
             specs: {
               format: 'MP3',
               bitrate: '56 Kbps',
