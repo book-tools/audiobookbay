@@ -32,7 +32,8 @@ describe('Parse Audiobook', () => {
           format: 'M4B',
           bitrate: '128 Kbps',
           bitrateKbps: 128,
-          size: 1460288881,
+          size: '1.36 GBs',
+          sizeBytes: 1460288881,
         },
         abridged: '',
         description:
@@ -182,7 +183,8 @@ describe('Parse Audiobook', () => {
           format: 'MP3',
           bitrate: '128 Kbps',
           bitrateKbps: 128,
-          size: 6914897347,
+          size: '6.44 GBs',
+          sizeBytes: 6914897347,
         },
         abridged: 'Unabridged',
         description:

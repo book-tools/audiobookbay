@@ -19,8 +19,10 @@ export interface AudiobookSpecs {
   bitrate: string | null;
   /** The average bitrate of the audio file(s) in Kbps */
   bitrateKbps: number | null;
+  /** The total size of all files in a formatted string */
+  size: string | null;
   /** The total size of all files in bytes */
-  size: number | null;
+  sizeBytes: number | null;
 }
 
 /** An AbbBook object returned from a search */

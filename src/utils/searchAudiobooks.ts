@@ -99,14 +99,15 @@ export const parseSearchAudiobooks = (
     const { bitrate, bitrateKbps } = parseBitrate(bitrateStr);
 
     // Size
-    let sizeStr = postEl.find(`.postContent span[style="color:#00f;"]`).text();
-    sizeStr += postEl
+    let size = postEl.find(`.postContent span[style="color:#00f;"]`).text();
+    const sizeUnit = postEl
       .find(`p[style="text-align:center;"]`)
       .text()
-      .split(sizeStr)[1]
+      .split(size)[1]
       .trim();
+    size = `${size} ${sizeUnit}`;
 
-    const size = parseFileSize(sizeStr);
+    const sizeBytes = parseFileSize(size);
 
     const audiobook: SearchAudiobook = {
       id,
@@ -121,6 +122,7 @@ export const parseSearchAudiobooks = (
         bitrate,
         bitrateKbps,
         size,
+        sizeBytes,
       },
     };
 

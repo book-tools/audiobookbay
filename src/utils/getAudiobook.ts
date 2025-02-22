@@ -86,7 +86,8 @@ export const parseAudiobook = (
   const trackers: string[] = [];
   let hash: string | null = null;
   let posted: string | null = null;
-  let size: number | null = null;
+  let size: string | null = null;
+  let sizeBytes: number | null = null;
 
   $('.postContent table tr').each((_, element) => {
     const tdFirst = $(element).find('td:first-child').text().trim();
@@ -115,7 +116,8 @@ export const parseAudiobook = (
 
       case 'File Size:':
       case 'Combined File Size:':
-        size = parseFileSize(tdSecond);
+        size = tdSecond;
+        sizeBytes = parseFileSize(tdSecond);
         break;
 
       default:
@@ -166,6 +168,7 @@ export const parseAudiobook = (
       bitrate,
       bitrateKbps,
       size,
+      sizeBytes,
     },
     abridged,
     description,
